@@ -1690,6 +1690,7 @@ function _TP(cf, Speed)
 
     tween:Play()
 end
+end
 local Main = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local Window = Main:CreateWindow({
     Title = "ZedX Hub [blox fruit]",

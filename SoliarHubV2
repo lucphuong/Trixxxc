@@ -20,6 +20,7 @@ do
     NPCList = {}
     shouldTween = false
     SoulGuitar = false
+    AutoJoinDungeon = false
     AutoDungeon = false
     KenTest = true
     debug = false
@@ -28,6 +29,7 @@ do
     Brazier3 = false
     Sec = 0.1
     ClickState = 0
+    CHECK_RADIUS = 6
     Num_self = 25
 end
 
@@ -38,8 +40,8 @@ until start
 World1 = game.PlaceId == 2753915549
 World2 = game.PlaceId == 4442272183
 World3 = game.PlaceId == 7449423635
-Dungoen = game.PlaceId == 73902483975735
-Sea = World1 or World2 or World3 or Dungoen or plr:Kick("❌ Blox Fruits Only ❌")
+Dungeon = game.PlaceId == 73902483975735
+Sea = World1 or World2 or World3 or Dungeon or plr:Kick("❌ Blox Fruits Only ❌")
 Marines = function()
     replicated.Remotes.CommF_:InvokeServer("SetTeam", "Marines")
 end
@@ -212,6 +214,11 @@ local PosMsList = {
     ["Sweet Thief"] = CFrame.new(116, 36, - 12478),
     ["Candy Rebel"] = CFrame.new(47, 61, - 12889),
     ["Ghost"] = CFrame.new(5251, 5, 1111)
+}
+local DungeonCFrames = {
+    CFrame.new(-227.457, 236.539, -426.895),
+    CFrame.new(-356.440, 236.539, -446.551),
+    CFrame.new(-489.517, 236.539, -430.249),
 }
 EquipWeapon = function(text)
     if not text then
@@ -2024,21 +2031,53 @@ Settings = Window:AddTab({
         Icon = "circle-ellipsis"
     })
 }
-if World1 or World2 or World3 then
-    Tabs.Dungeon:AddParagraph({
-        Title = "Join Dungeon To Unlock Function",
-        Content = "!!!"
-    })
-end
-if dungeon then
-    local AutoDungeonRaid = Tabs.Dungeon:AddToggle("AutoDungeonRaid", {
-        Title = "Auto Dungeon Raid",
+if Dungeon then
+    local Players = game:GetService("Players")
+    local LocalPlayer = Players.LocalPlayer
+    local AutoJoinDungeonRaid = Tabs.Dungeon:AddToggle("AutoDungeonRaid", {
+        Title = "Auto Join Dungeon Raid",
         Default = false
     })
+    AutoJoinDungeonRaid:OnChanged(function(value)
+        AutoJoinDungeon = value
+    end)
+    local function IsPlayerAtCFrame(cf)
+        for _, plr in ipairs(Players:GetPlayers()) do
+            if plr ~= LocalPlayer then
+                local char = plr.Character
+                local hrp = char and char:FindFirstChild("HumanoidRootPart")
+                if hrp then
+                    if (hrp.Position - cf.Position).Magnitude <= CHECK_RADIUS then
+                        return true
+                    end
+                end
+            end
+        end
+        return false
+    end
+    task.spawn(function()
+        while task.wait(sec) do
+            if AutoJoinDungeon then
+                for _, cf in ipairs(DungeonCFrames) do
+                    if IsPlayerAtCFrame(cf) then
+                        if _tp then
+                            _tp(cf)
+                        end
+                        break
+                    end
+                end
+            end
+        end
+    end)
+end
+if Dungeon then
+local AutoDungeonRaid = Tabs.Dungeon:AddToggle("AutoDungeonRaid", {
+       Title = "Auto Dungeon Raid",
+       Default = false
+})
 AutoDungeonRaid:OnChanged(function(value)
         AutoDungeon = value
     end)
-end
 task.spawn(function()
     while task.wait(sec) do
         if AutoDungeon then
@@ -2066,9 +2105,9 @@ task.spawn(function()
                 end
             end
         end
-    end
+     end
 end)
-
+end
 local FarmLevel = Tabs.Main:AddToggle("FarmLevel", {
     Title = "Auto Farm Level",
     Description = "",

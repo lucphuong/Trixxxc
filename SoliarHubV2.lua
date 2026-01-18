@@ -251,11 +251,12 @@ gay = (function()
             darkFog:Destroy()
         end
     end
-    local Water = workspace._WorldOrigin["Foam;"]
+    local World = workspace:FindFirstChild("_WorldOrigin")
+local Water = World and World:FindFirstChild("Foam")
     if Water and workspace._WorldOrigin["Foam;"] then
         Water:Destroy()
     end        
-end)()
+end)
 local Attack = {}
 Attack.__index = Attack
 Attack.Alive = function(model)
@@ -2024,7 +2025,10 @@ Settings = Window:AddTab({
     })
 }
 if World1 or World2 or World3 then
-    Tabs.Dungeon:AddSection("Join Dungoen To Unlock Function")
+    Tabs.Dungeon:AddParagraph({
+        Title = "Join Dungeon To Unlock Function",
+        Content = "!!!"
+    })
 end
 if dungeon then
     local AutoDungeonRaid = Tabs.Dungeon:AddToggle("AutoDungeonRaid", {

@@ -2024,7 +2024,7 @@ Settings = Window:AddTab({
     })
 }
 if World1 or World2 or World3 then
-    Tabs.Dungoen:AddSection("Join Dungoen To Unlock Function")
+    Tabs.Dungeon:AddSection("Join Dungoen To Unlock Function")
 end
 if dungeon then
     local AutoDungeonRaid = Tabs.Dungeon:AddToggle("AutoDungeonRaid", {
